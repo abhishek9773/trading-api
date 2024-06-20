@@ -1,4 +1,4 @@
-package com.abhinsst.trading_api.Util;
+package com.abhinsst.trading_api.util;
 
 import java.util.Random;
 

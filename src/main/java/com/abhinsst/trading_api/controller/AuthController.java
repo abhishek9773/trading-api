@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.abhinsst.trading_api.Util.OtpUtils;
 import com.abhinsst.trading_api.config.JwtProvider;
 import com.abhinsst.trading_api.model.TwoFactorOTP;
 import com.abhinsst.trading_api.model.User;
@@ -24,6 +23,7 @@ import com.abhinsst.trading_api.response.AuthResponse;
 import com.abhinsst.trading_api.service.CustomUserDetailsService;
 import com.abhinsst.trading_api.service.EmailService;
 import com.abhinsst.trading_api.service.TwoFactorOptService;
+import com.abhinsst.trading_api.util.OtpUtils;
 
 @RestController
 @RequestMapping("/auth")
@@ -125,7 +125,8 @@ public class AuthController {
 
   }
 
-  public ResponseEntity<AuthResponse> verifySigninOpt(@PathVariable String otp, @RequestParam String id)
+  @PostMapping("/two-factor/opt/{otp}")
+  public ResponseEntity<AuthResponse> verifySignInOpt(@PathVariable String otp, @RequestParam String id)
       throws Exception {
     TwoFactorOTP towFactorOTP = twoFactorOptService.findById(id);
     if (twoFactorOptService.verifyTwoFactorOpt(towFactorOTP, otp)) {
