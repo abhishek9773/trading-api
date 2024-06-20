@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
-  @GetMapping("/home")
+  @GetMapping()
   public String home() {
-    return "home api is ready";
+    return "home api is ready - Hellow abhishek how are you ";
   }
 
 }
