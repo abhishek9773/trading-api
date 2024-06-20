@@ -8,18 +8,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.abhinsst.trading_api.Util.OtpUtils;
 import com.abhinsst.trading_api.config.JwtProvider;
+import com.abhinsst.trading_api.model.TwoFactorOTP;
 import com.abhinsst.trading_api.model.User;
 import com.abhinsst.trading_api.repository.UserRepository;
 import com.abhinsst.trading_api.response.AuthResponse;
 import com.abhinsst.trading_api.service.CustomUserDetailsService;
-
-import io.jsonwebtoken.security.Password;
+import com.abhinsst.trading_api.service.EmailService;
+import com.abhinsst.trading_api.service.TwoFactorOptService;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,6 +34,12 @@ public class AuthController {
 
   @Autowired
   private CustomUserDetailsService customUserDetailsService;
+
+  @Autowired
+  private TwoFactorOptService twoFactorOptService;
+
+  @Autowired
+  private EmailService emailService;
 
   // private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -46,7 +56,7 @@ public class AuthController {
     newUser.setPassword(user.getPassword()); // Hash the password
     newUser.setFullName(user.getFullName());
 
-    User savedUser = userRepository.save(newUser);
+    userRepository.save(newUser);
 
     Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
     SecurityContextHolder.getContext().setAuthentication(auth);
@@ -72,6 +82,24 @@ public class AuthController {
 
     String jwt = JwtProvider.generateToken(auth);
 
+    User authuser = userRepository.findByEmail(userName);
+    if (user.getTowFatoreAuth().isEnable()) {
+      AuthResponse res = new AuthResponse();
+      res.setMessage("Two factor authentication is enabled");
+      res.setTwoFactorAuthEnabled(true);
+      String otp = OtpUtils.generateOTP();
+      TwoFactorOTP oldTwoFactorOTP = twoFactorOptService.findByUser(authuser.getId());
+      if (oldTwoFactorOTP != null) {
+        twoFactorOptService.deleteTwoFactorOtp(oldTwoFactorOTP);
+      }
+
+      TwoFactorOTP newTwoFactorOTP = twoFactorOptService.createTwoFactorOptOtp(authuser, otp, jwt);
+
+      emailService.sendVerificationOptEmail(userName, otp);
+
+      res.setSession(newTwoFactorOTP.getId());
+      return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
+    }
     AuthResponse res = new AuthResponse();
     res.setJwt(jwt);
     res.setStatus(true);
@@ -94,6 +122,21 @@ public class AuthController {
     }
 
     return new UsernamePasswordAuthenticationToken(password, userDetails.getAuthorities());
+
+  }
+
+  public ResponseEntity<AuthResponse> verifySigninOpt(@PathVariable String otp, @RequestParam String id)
+      throws Exception {
+    TwoFactorOTP towFactorOTP = twoFactorOptService.findById(id);
+    if (twoFactorOptService.verifyTwoFactorOpt(towFactorOTP, otp)) {
+      AuthResponse res = new AuthResponse();
+      res.setMessage("Two factor authentication verified");
+      res.setTwoFactorAuthEnabled(true);
+      res.setJwt(towFactorOTP.getJwt());
+      return new ResponseEntity<>(res, HttpStatus.OK);
+
+    }
+    throw new Exception("invvalid otp");
 
   }
 
