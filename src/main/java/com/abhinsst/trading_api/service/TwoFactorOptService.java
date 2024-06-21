@@ -6,7 +6,7 @@ import com.abhinsst.trading_api.model.User;
 
 public interface TwoFactorOptService {
 
-  TwoFactorOTP createTwoFactorOptOtp(User user, String otp, String jwt);
+  TwoFactorOTP createTwoFactorOpt(User user, String otp, String jwt);
 
   TwoFactorOTP findByUser(Long userId);
 

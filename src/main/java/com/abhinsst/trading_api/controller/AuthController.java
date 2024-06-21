@@ -93,7 +93,7 @@ public class AuthController {
         twoFactorOptService.deleteTwoFactorOtp(oldTwoFactorOTP);
       }
 
-      TwoFactorOTP newTwoFactorOTP = twoFactorOptService.createTwoFactorOptOtp(authuser, otp, jwt);
+      TwoFactorOTP newTwoFactorOTP = twoFactorOptService.createTwoFactorOpt(authuser, otp, jwt);
 
       emailService.sendVerificationOptEmail(userName, otp);
 
