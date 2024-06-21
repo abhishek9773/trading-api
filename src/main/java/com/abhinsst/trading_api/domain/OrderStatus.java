@@ -1,7 +1,7 @@
 package com.abhinsst.trading_api.domain;
 
 public enum OrderStatus {
-  PADING,
+  PANDING,
   FILED,
   CANCELLED,
   PARTIALLY_FILLED, ERROR, SUCCESS
