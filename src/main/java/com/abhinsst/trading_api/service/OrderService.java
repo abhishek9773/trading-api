@@ -19,6 +19,6 @@ public interface OrderService {
 
   List<Order> getAllOrderOfUser(Long userId, OrderType orderType, String assetSymbol);
 
-  Order processOrder(Coin coin, double quantity, OrderType orderType, User user);
+  Order processOrder(Coin coin, double quantity, OrderType orderType, User user) throws Exception;
 
 }
