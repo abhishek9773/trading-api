@@ -13,9 +13,9 @@ import com.abhinsst.trading_api.model.User;
 @Service
 public interface OrderService {
 
-  Order createOrder(User user, OrderItem orderItem);
+  Order createOrder(User user, OrderItem orderItem, OrderType orderType);
 
-  Order getOrderById(Long orderId);
+  Order getOrderById(Long orderId) throws Exception;
 
   List<Order> getAllOrderOfUser(Long userId, OrderType orderType, String assetSymbol);
 
