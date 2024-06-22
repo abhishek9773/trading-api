@@ -1,33 +1,28 @@
 package com.abhinsst.trading_api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Entity
 @Data
-public class OrderItem {
+public class Watchlist {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private double quantity;
-
-  @ManyToOne
-  private Coin coin;
-
-  private double buyPrice;
-
-  private double sellPrice;
-
-  @JsonIgnore
   @OneToOne
-  private Order order;
+  private User user;
+
+  @ManyToMany
+  private List<Coin> coins = new ArrayList<>();
 
 }
