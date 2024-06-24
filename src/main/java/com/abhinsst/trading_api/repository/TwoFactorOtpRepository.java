@@ -6,6 +6,6 @@ import com.abhinsst.trading_api.model.TwoFactorOTP;
 
 public interface TwoFactorOtpRepository extends JpaRepository<TwoFactorOTP, String> {
 
-  TwoFactorOTP findByUserId(Long userId);
+  TwoFactorOTP findByUserId(Long userId); // select t from TwoFactorOTP where t.user.id = :userId
 
 }

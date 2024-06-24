@@ -8,6 +8,6 @@ import com.abhinsst.trading_api.model.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-  List<Order> findByUserId(Long userId);
+  List<Order> findByUserId(Long userId); // select o from Order o WHERE o.user.id = ?1
 
 }

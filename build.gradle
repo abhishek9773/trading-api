@@ -38,6 +38,12 @@ runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
 // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
 runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
   implementation 'org.springframework.boot:spring-boot-starter-mail'
+	// https://mvnrepository.com/artifact/com.razorpay/razorpay-java
+implementation 'com.razorpay:razorpay-java:1.4.3'
+// https://mvnrepository.com/artifact/com.stripe/stripe-java
+implementation 'com.stripe:stripe-java:25.13.0'
+
+
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

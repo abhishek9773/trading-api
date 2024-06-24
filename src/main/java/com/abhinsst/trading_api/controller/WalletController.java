@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abhinsst.trading_api.model.Order;
+import com.abhinsst.trading_api.model.PaymentOrder;
 import com.abhinsst.trading_api.model.User;
 import com.abhinsst.trading_api.model.Wallet;
 import com.abhinsst.trading_api.model.WalletTransaction;
+import com.abhinsst.trading_api.response.PaymentResponse;
 import com.abhinsst.trading_api.service.OrderService;
+import com.abhinsst.trading_api.service.PaymentService;
 import com.abhinsst.trading_api.service.UserService;
 import com.abhinsst.trading_api.service.WalletService;
 
@@ -32,6 +36,9 @@ public class WalletController {
 
   @Autowired
   private OrderService orderService;
+
+  @Autowired
+  private PaymentService paymentService;
 
   @GetMapping("")
   public ResponseEntity<Wallet> getUserWallet(@RequestHeader("Authorization") String jwt) throws Exception {
@@ -63,6 +70,25 @@ public class WalletController {
 
     Wallet wallet = walletService.payOrderPayment(order, user);
 
+    return new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);
+  }
+
+  @PutMapping("/api/wallet/deposit")
+  public ResponseEntity<Wallet> addMoneyToWallet(@RequestHeader("Authorization") String jwt,
+      @RequestParam(name = "order_id") Long orderId,
+      @RequestParam(name = "payment_id") String paymentId) throws Exception {
+
+    User user = userService.findUserProfileByJwt(jwt);
+
+    Wallet wallet = walletService.getUserWellet(user);
+
+    PaymentOrder order = paymentService.getPaymentOrderById(orderId);
+
+    Boolean status = paymentService.ProccedPaymentOrder(order, paymentId);
+
+    if (status) {
+      wallet = walletService.addBalance(wallet, order.getAmount());
+    }
     return new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);
   }
 

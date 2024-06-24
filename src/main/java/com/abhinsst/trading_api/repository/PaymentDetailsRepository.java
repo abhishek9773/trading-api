@@ -6,6 +6,6 @@ import com.abhinsst.trading_api.model.PaymentDetails;
 
 public interface PaymentDetailsRepository extends JpaRepository<PaymentDetails, Long> {
 
-  PaymentDetails findByUserId(Long userId);
+  PaymentDetails findByUserId(Long userId); // select p from PaymentDetails p where p.user.id = :userId
 
 }

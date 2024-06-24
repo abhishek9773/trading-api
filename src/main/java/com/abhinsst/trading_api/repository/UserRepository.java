@@ -8,4 +8,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   public User findByEmail(String email);
 
+  // select u
+  // form User
+  // u where u.email = :email
+
 }
